@@ -18,6 +18,7 @@
       options = "--delete-older-than 7d";
     };
   };
+  nixpkgs.config.allowUnfree = true;
 
   nix.settings = {
   substituters = [ "https://ros.cachix.org" ];
@@ -94,8 +95,10 @@
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
+  #services.xserver.displayManager.gdm.enable = true;
+  #services.xserver.desktopManager.gnome.enable = true;
+  services.desktopManager.gnome.enable = true;
+  services.displayManager.gdm.enable = true;
   
   services.displayManager.defaultSession = "hyprland";
 
@@ -204,6 +207,7 @@
      starship
      bat
      killall
+     vscode
 
      rustc
      cargo
@@ -274,6 +278,15 @@
      gnome-tweaks
      adwaita-icon-theme
      gnome-themes-extra
+
+
+     (vscode-with-extensions.override {
+      vscodeExtensions = with vscode-extensions; [
+        ms-vscode.cpptools
+        rust-lang.rust-analyzer
+        jnoortheen.nix-ide
+      ];
+     })
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

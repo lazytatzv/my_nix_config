@@ -21,9 +21,18 @@
   nixpkgs.config.allowUnfree = true;
 
   nix.settings = {
-  substituters = [ "https://ros.cachix.org" ];
-  trusted-public-keys = [ "ros.cachix.org-1:dSyZndqv5nm9AsfLBpgS6S99unf2Y78YV1S7yVNoD8A=" ];
-};
+    # Add the ROS cache to your substituters
+    substituters = [
+      "https://cache.nixos.org/"
+      "https://ros.cachix.org"
+    ];
+    # This key is the "digital signature" that lets Nix trust the ROS binaries
+    trusted-public-keys = [
+      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+      "ros.cachix.org-1:dSyZxI8geDCJrwgvCOHDoAfOm5sV1wCPjBkKL+38Rvo="
+    ];
+  };
+
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   
@@ -35,6 +44,8 @@
 
   # Configure network connections interactively with nmcli or nmtui.
   networking.networkmanager.enable = true; # I don't like NM
+  networking.wireless.iwd.enable = true;
+  networking.networkmanager.wifi.backend = "iwd";
 
   boot.kernel.sysctl = {
     "vm.swappiness" = 180;
@@ -101,6 +112,8 @@
   services.displayManager.gdm.enable = true;
   
   services.displayManager.defaultSession = "hyprland";
+
+  services.tailscale.enable = true;
 
   services.resolved = {
     enable = true;
@@ -208,6 +221,20 @@
      bat
      killall
      vscode
+     net-tools
+     lsof
+     gh
+
+     rosPackages.jazzy.ros-core
+     rosPackages.jazzy.turtlesim
+     rosPackages.jazzy.ros-environment
+     rosPackages.jazzy.ros2topic
+     rosPackages.jazzy.ros2run
+     rosPackages.jazzy.ros2cli
+     rosPackages.jazzy.ros2launch
+     rosPackages.jazzy.ros2node
+
+     gcc
 
      rustc
      cargo
@@ -222,7 +249,7 @@
      kdePackages.qt6ct
      #kdePackages.qt5compat
      qt6.qt5compat
-     #qt6.qtgraphicaleffects
+     #qt6.qtraphicaleffects
      bibata-cursors
 
      nh
@@ -234,6 +261,10 @@
 
      fastfetch
      eza
+     colcon
+     zoxide
+     uv
+
      
 
      hyprland
@@ -242,6 +273,8 @@
      swaylock
      mako
      ffmpeg
+     ccache
+     sccache
      kitty
      libnotify
      nwg-look
@@ -259,6 +292,7 @@
      bluez-tools
      swappy
      python3
+     python3Packages.pip 
      gtk3
      libdbusmenu-gtk3
      btop
@@ -289,6 +323,12 @@
      })
   ];
 
+  # --- Graphics (AMD) ---
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true;
+  };
+
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   programs.mtr.enable = true;
@@ -304,9 +344,9 @@
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
+  #networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
+  networking.firewall.enable = false;
 
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you

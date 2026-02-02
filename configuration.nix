@@ -81,6 +81,20 @@
     "fr_FR.UTF-8/UTF-8"
   ];
 
+  # 1. Enable Japanese Input (Fcitx5 + Mozc)
+  i18n.inputMethod = {
+    enable = true;
+    type = "fcitx5";
+    fcitx5.addons = with pkgs; [
+      fcitx5-mozc       # The Japanese engine
+      fcitx5-gtk        # GTK app support (Firefox, LibreOffice)
+      fcitx5-nord       # (Optional) A nice theme matching your terminal
+    ];
+  };
+
+
+
+
   # This allows your clock to be French while the rest is English
 
   fonts = {
@@ -90,9 +104,18 @@
       nerd-fonts.fira-code
       noto-fonts
       noto-fonts-cjk-sans
+      noto-fonts-cjk-serif
+      ipafont
       noto-fonts-color-emoji
       liberation_ttf
     ];
+  };
+
+  environment.variables = {
+    # Force apps to use Fcitx5
+    GTK_IM_MODULE = "fcitx";
+    QT_IM_MODULE = "fcitx";
+    XMODIFIERS = "@im=fcitx";
   };
 
 
